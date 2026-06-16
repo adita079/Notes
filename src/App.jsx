@@ -4,7 +4,6 @@ import "./App.css"
 import notepad from "./assets/notp.jpeg"
 import cats from "./assets/titleCat.jpg"
 import peek from "./assets/peek.png"
-import { use } from 'react'
 
 function App() {
 
@@ -12,16 +11,21 @@ function App() {
   const[descr,setDescriptn] =useState('')
 
   const[task,setTask] = useState([]);
+  const[error, setError] = useState('');
 
   function submitHandler(e){
     const copyTask = [...task];
-    copyTask.push({title,descr});
+    copyTask.push({
+      title: title.trim(),
+      descr: descr.trim()
+    });
     console.log(task);
     console.log(title);
     console.log(descr);
     setTitle('');
     setDescriptn('');
     setTask(copyTask);
+    setError('');
   }
 
     return (
@@ -30,7 +34,14 @@ function App() {
 
         <form onSubmit={(e)=>{
           e.preventDefault();
-          submitHandler(e)
+          if(title.trim() === '' && descr.trim() === '')
+            setError("Please add valid title and description.")
+          else if(title.trim() === '')
+            setError("Please add valid title.")
+          else if(descr.trim() === '')
+            setError("Please add valid description.")
+          else
+            submitHandler(e)
         }} className='flex gap-4 lg:w-7/12 p-10 flex-col items-start'>
       
         <h1 className=' flex flex-wrap text-4xl mb-2 font-bold'>
@@ -39,16 +50,16 @@ function App() {
         </h1>
 
         {/* heading input */}
-
         <input 
           type="text"
           placeholder='Enter Title' 
           className='px-5 w-full font-medium py-2 border-2 outline-none rounded' 
-          value={title} 
+          value={title}
           onChange={(e)=>{
             setTitle(e.target.value)
+            setError('');
           }} 
-        />
+          />
 
         {/* description input */}
 
@@ -59,8 +70,14 @@ function App() {
           value={descr} 
           onChange={(e)=>{
             setDescriptn(e.target.value)
+            setError('');
           }}  
         /> 
+        {error && (
+              <p className='text-red-600 font-medium'>
+                {error}
+              </p>
+            )}
 
         {/* Submit button */}
 
@@ -105,7 +122,7 @@ function App() {
                   className='absolute bottom-4 right-4 cursor-pointer rounded-xl hover:opacity-60 h-6 w-6 bg-red-500'
                   onClick={
                     ()=>{
-                      if(confirm("are you sure you want to delete the note?"))
+                      if(confirm("Are you sure you want to delete the note?"))
                         setTask(task.filter((_,i) => i !== index))}}> 
                 </button>
               </div>
