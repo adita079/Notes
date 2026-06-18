@@ -111,8 +111,8 @@ function App() {
           className='lg:w-8/12 lg:border-l-2 p-10'
           style={{ backgroundColor: "#C6C6C6" }}
         >
-          <h1 className='text-4xl font-bold text-black'>
-            Recent Notes
+         <h1 className='text-4xl font-bold text-black'>
+            Recent Notes ({task.length})
           </h1>
 
           <div className='flex flex-wrap items-start justify-between gap-6 mt-4 h-[90%] overflow-y-auto hide-scrollbar'>
