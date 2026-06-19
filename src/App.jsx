@@ -10,6 +10,7 @@ function App() {
   const [title, setTitle] = useState('');
   const [descr, setDescriptn] = useState('');
   const [error, setError] = useState('');
+  const [search, setSearch] = useState('');
 
   const [task, setTask] = useState(() => {
     const savedNotes = localStorage.getItem("notes");
@@ -19,6 +20,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem("notes", JSON.stringify(task));
   }, [task]);
+  const filteredTasks = task.filter((note) =>
+  note.title.toLowerCase().includes(search.toLowerCase()) ||
+  note.descr.toLowerCase().includes(search.toLowerCase())
+);
 
   function submitHandler() {
     const copyTask = [...task];
@@ -104,7 +109,6 @@ function App() {
           </button>
 
         </form>
-
         {/* Recent Notes */}
 
         <div
@@ -114,14 +118,22 @@ function App() {
          <h1 className='text-4xl font-bold text-black'>
             Recent Notes ({task.length})
           </h1>
-
+          <input
+            type="text"
+            placeholder="Search notes..."
+            className="w-full mt-4 px-4 py-2 rounded border-2 border-black text-black outline-none"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
           <div className='flex flex-wrap items-start justify-between gap-6 mt-4 h-[90%] overflow-y-auto hide-scrollbar'>
 
-            {task.length === 0
+            {filteredTasks.length === 0
 
               ? (
                 <h1 className='flex flex-wrap items-center gap-5 text-black font-semibold text-xl mt-30'>
-                  No notes yet, Add your first note!
+                  {search
+                  ? "No matching notes found!"
+                  : "No notes yet, Add your first note!"}
                   <img
                     src={peek}
                     className='h-16 w-16'
@@ -130,7 +142,7 @@ function App() {
                 </h1>
               )
 
-              : task.map((elem, index) => {
+              : filteredTasks.map((elem, index) => {
 
                 return (
                   <div
