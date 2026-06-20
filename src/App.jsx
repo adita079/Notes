@@ -11,6 +11,7 @@ function App() {
   const [descr, setDescriptn] = useState('');
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
+  const [editIndex, setEditIndex] = useState(null);
 
   const [task, setTask] = useState(() => {
     const savedNotes = localStorage.getItem("notes");
@@ -26,18 +27,36 @@ function App() {
 );
 
   function submitHandler() {
+  if (editIndex !== null) {
+
+    const updatedTasks = [...task];
+
+    updatedTasks[editIndex] = {
+      ...updatedTasks[editIndex],
+      title: title.trim(),
+      descr: descr.trim()
+    };
+
+    setTask(updatedTasks);
+    setEditIndex(null);
+
+  } else {
+
     const copyTask = [...task];
 
     copyTask.push({
+      id: Date.now(),
       title: title.trim(),
       descr: descr.trim()
     });
 
-    setTitle('');
-    setDescriptn('');
     setTask(copyTask);
-    setError('');
   }
+
+  setTitle('');
+  setDescriptn('');
+  setError('');
+}
 
   return (
     <>
@@ -125,7 +144,7 @@ function App() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <div className='flex flex-wrap items-start justify-between gap-6 mt-4 h-[90%] overflow-y-auto hide-scrollbar'>
+          <div className='flex flex-wrap items-start justify-between gap-6 mt-4 flex-1 overflow-y-auto hide-scrollbar'>
 
             {filteredTasks.length === 0
 
@@ -159,6 +178,15 @@ function App() {
                       {elem.descr}
                     </p>
 
+                    <button
+                      className='absolute bottom-4 right-12 h-6 w-6 bg-blue-500 rounded hover:opacity-60'
+                      onClick={() => {
+                        setTitle(elem.title);
+                        setDescriptn(elem.descr);
+                        setEditIndex(index);
+                      }}
+                      >
+                    </button>
                     <button
                       className='absolute bottom-4 right-4 cursor-pointer rounded-xl hover:opacity-60 h-6 w-6 bg-red-500'
                       onClick={() => {
